@@ -1,0 +1,37 @@
+{
+  "name": "deep-diff-keep-element",
+  "description": "A wrapper for 'deep-diff' that keeps the whole array element on edit",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "zatziky <zatziky@gmail.com>",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "diff",
+    "difference",
+    "compare",
+    "change-tracking"
+  ],
+  "files": [
+    "main.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zatziky/deep-diff-keep-element.git"
+  },
+  "main": "./main.js",
+  "directories": {
+    "test": "./test"
+  },
+
+  "dependencies": {
+    "deep-diff": "^0.3.4",
+    "ramda": "^0.21.0"
+  },
+
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
+  }
+}
