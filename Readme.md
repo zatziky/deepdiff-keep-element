@@ -44,6 +44,7 @@ would look in the original [deep-diff](https://github.com/flitbit/diff) like:
 
 With this utility the result keeps the original and changed elements. It also has the `kind` as `A` and changes the structure a bit:
 
+**EDIT**
 ```
 [{
    kind: "A",
@@ -56,6 +57,21 @@ With this utility the result keeps the original and changed elements. It also ha
        lhs: 1,
        rhs: 2
    }
+}]
+```
+
+**DELETE**
+```
+[{
+    "kind": "A",
+    "path": ["array", 0],
+    "item": {
+        "kind": "D",
+        "path": ["a"],
+        "elementLeft": {a: 1, b: 2},
+        "elementRight": {},
+        "lhs": 1,
+    }
 }]
 ```
 

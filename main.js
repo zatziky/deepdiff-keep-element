@@ -15,16 +15,31 @@ class ObjectDiffer {
 
         return diffs.map(diff => {
             const isNestedChange = diff.path.length > 2;
-            const isArrayElementEdited = R.any(R.is(Number), diff.path);
-            if (!isNestedChange || !isArrayElementEdited || diff.kind !== KIND_EDITED) {
+            const isArrayElementChange = R.any(R.is(Number), diff.path);
+            if (!isNestedChange || !isArrayElementChange || diff.kind === KIND_ARRAY || diff.kind !== KIND_EDITED) {
                 return diff;
             }
 
-            return this._createDiffForEditedArrayElement(objLeft, objRight, diff.path, diff);
-        });
+            return this._createDiffForChangedArrayElement(objLeft, objRight, diff.path, diff);
+        }).reduce((diffs, diff) => {
+            const isArrayElementChange = R.any(R.is(Number), diff.path);
+            if (diff.kind === KIND_DELETED && isArrayElementChange/*TODO && R.last(diffs) ===  diff*/) {
+                const diffAdapted = this._createDiffForChangedArrayElement(objLeft, objRight, diff.path, diff);
+                if (R.equals(
+                        R.dissocPath(['item','path'], R.dissocPath(['item', 'lhs'], diffAdapted)),
+                        R.dissocPath(['item','path'], R.dissocPath(['item', 'lhs'], R.last(diffs) || {}))
+                    )
+                ){
+                    return diffs;
+                }
+                return R.append(diffAdapted, diffs);
+            }
+
+            return R.append(diff, diffs);
+        }, []);
     }
 
-    _createDiffForEditedArrayElement(objLeft, objRight, path, diff) {
+    _createDiffForChangedArrayElement(objLeft, objRight, path, diff) {
         const elementPosition = R.findLastIndex(R.is(Number), path);
         const pathToElement = R.slice(0, elementPosition + 1, path);
 

@@ -15,7 +15,7 @@ describe('ObjectDiffer', () => {
 
             const diffFromDeepDiff = deepDiff(objA, objB)[0];
 
-            expect(objectDiffer._createDiffForEditedArrayElement(objA, objB, diffFromDeepDiff.path, diffFromDeepDiff))
+            expect(objectDiffer._createDiffForChangedArrayElement(objA, objB, diffFromDeepDiff.path, diffFromDeepDiff))
                 .to.deep.equal({
                 "kind": KIND_ARRAY,
                 "path": ["array", 0],
@@ -32,7 +32,7 @@ describe('ObjectDiffer', () => {
     });
 
     describe('.diff()', () => {
-        it('maps deep-diff.diff to our version of diff', () => {
+        it('maps deep-diff.diff edits in array to our version of diff', () => {
             const objA = {array: [{a: 1}]};
             const objB = {array: [{a: 2}]};
             const diff = objectDiffer.diff(objA, objB);
@@ -48,6 +48,25 @@ describe('ObjectDiffer', () => {
                     "elementRight": {a: 2},
                     "lhs": 1,
                     "rhs": 2
+                }
+            });
+        });
+
+        it('maps deep-diff.diff element deletions in array to our version of diff', () => {
+            const objA = {array: [{a: 1, b: 2}]};
+            const objB = {array: [{}]};
+            const diff = objectDiffer.diff(objA, objB);
+
+            expect(diff.length).to.equal(1);
+            expect(diff[0]).to.deep.equal({
+                "kind": KIND_ARRAY,
+                "path": ["array", 0],
+                "item": {
+                    "kind": KIND_DELETED,
+                    "path": ["a"],
+                    "elementLeft": {a: 1, b: 2},
+                    "elementRight": {},
+                    "lhs": 1,
                 }
             });
         });
@@ -106,27 +125,6 @@ describe('ObjectDiffer', () => {
                     "kind": KIND_ARRAY,
                     "path": ["array"]
                 }]);
-            });
-
-            it('diff element in an array edited key', () => {
-                const objA = {array: [{a: {c: 2}}]};
-                const objB = {array: [{b: {c: 2}}]};
-
-                const resultDeepDiff = deepDiff(objA, objB);
-                const resultObjectDiffer = objectDiffer.diff(objA, objB);
-
-                expect(resultObjectDiffer).to.deep.equal(resultDeepDiff);
-                expect(resultObjectDiffer).to.deep.equal([
-                    {
-                        kind: KIND_DELETED,
-                        "lhs": {c: 2},
-                        "path": ["array", 0, "a"],
-                    },
-                    {
-                        "kind": KIND_ADDED,
-                        "path": ["array", 0, "b"],
-                        "rhs": {'c': 2}
-                    }]);
             });
         });
     });
