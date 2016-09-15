@@ -27,8 +27,8 @@ and not just the difference.
 The object difference for 
 
 ```
-const objA = {array: [{a: 1}]};
-const objB = {array: [{a: 2}]};
+const objA = {array: [{a: 1, b:3, c:0}]};
+const objB = {array: [{a: 2, b:4, c:0}]};
 ```
 
 would look in the original [deep-diff](https://github.com/flitbit/diff) like:
@@ -52,10 +52,8 @@ With this utility the result keeps the original and changed elements. It also ha
    item: {
        kind: "E",
        path: ["a"],
-       elementLeft: {a: 1},
-       elementRight: {a: 2},
-       lhs: 1,
-       rhs: 2
+       lhs: {a: 1, b:3, c:0},
+       rhs: {a: 2, b:4, c:0}
    }
 }]
 ```
@@ -68,9 +66,8 @@ With this utility the result keeps the original and changed elements. It also ha
     "item": {
         "kind": "D",
         "path": ["a"],
-        "elementLeft": {a: 1, b: 2},
-        "elementRight": {},
-        "lhs": 1,
+        "lhs": {a: 1, b: 2},
+        "rhs": {}
     }
 }]
 ```

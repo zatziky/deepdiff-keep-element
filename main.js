@@ -16,14 +16,14 @@ class ObjectDiffer {
         return diffs.map(diff => {
             const isNestedChange = diff.path.length > 2;
             const isArrayElementChange = R.any(R.is(Number), diff.path);
-            if (!isNestedChange || !isArrayElementChange || diff.kind === KIND_ARRAY || diff.kind !== KIND_EDITED) {
+            if (!isNestedChange || !isArrayElementChange || diff.kind === KIND_ARRAY || diff.kind === KIND_EDITED || diff.kind === KIND_DELETED) {
                 return diff;
             }
 
             return this._createDiffForChangedArrayElement(objLeft, objRight, diff.path, diff);
         }).reduce((diffs, diff) => {
             const isArrayElementChange = R.any(R.is(Number), diff.path);
-            if (diff.kind === KIND_DELETED && isArrayElementChange/*TODO && R.last(diffs) ===  diff*/) {
+            if ((diff.kind === KIND_DELETED || diff.kind === KIND_ARRAY || diff.kind === KIND_EDITED) && isArrayElementChange/*TODO && R.last(diffs) ===  diff*/) {
                 const diffAdapted = this._createDiffForChangedArrayElement(objLeft, objRight, diff.path, diff);
                 if (R.equals(
                         R.dissocPath(['item','path'], R.dissocPath(['item', 'lhs'], diffAdapted)),
@@ -50,8 +50,8 @@ class ObjectDiffer {
             "kind": KIND_ARRAY,
             "path": pathToElement,
             "item": R.merge(diff, {
-                elementLeft: elementModifiedLeft,
-                elementRight: elementModifiedRight,
+                lhs: elementModifiedLeft,
+                rhs: elementModifiedRight,
                 path: R.slice(elementPosition + 1, Infinity, path)
             })
         };

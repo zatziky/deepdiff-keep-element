@@ -22,10 +22,8 @@ describe('ObjectDiffer', () => {
                 "item": {
                     "kind": KIND_EDITED,
                     "path": ["a"],
-                    "elementLeft": {a: 1},
-                    "elementRight": {a: 2},
-                    "lhs": 1,
-                    "rhs": 2
+                    "lhs": {a: 1},
+                    "rhs": {a: 2},
                 }
             });
         });
@@ -33,8 +31,8 @@ describe('ObjectDiffer', () => {
 
     describe('.diff()', () => {
         it('maps deep-diff.diff edits in array to our version of diff', () => {
-            const objA = {array: [{a: 1}]};
-            const objB = {array: [{a: 2}]};
+            const objA = {array: [{a: 1, b:3, c:0}]};
+            const objB = {array: [{a: 2, b:4, c:0}]};
             const diff = objectDiffer.diff(objA, objB);
 
             expect(diff.length).to.equal(1);
@@ -44,10 +42,8 @@ describe('ObjectDiffer', () => {
                 "item": {
                     "kind": KIND_EDITED,
                     "path": ["a"],
-                    "elementLeft": {a: 1},
-                    "elementRight": {a: 2},
-                    "lhs": 1,
-                    "rhs": 2
+                    "lhs": {a: 1, b:3, c:0},
+                    "rhs": {a: 2, b:4, c:0},
                 }
             });
         });
@@ -64,9 +60,8 @@ describe('ObjectDiffer', () => {
                 "item": {
                     "kind": KIND_DELETED,
                     "path": ["a"],
-                    "elementLeft": {a: 1, b: 2},
-                    "elementRight": {},
-                    "lhs": 1,
+                    "lhs": {a: 1, b: 2},
+                    "rhs": {},
                 }
             });
         });
